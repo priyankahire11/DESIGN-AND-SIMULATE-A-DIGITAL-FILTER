@@ -13,3 +13,7 @@
 *MENTOR NAME* :NEELA SANTOSH KUMAR
 
 #ENTER THE DESCRIPTION OF THE TASK:
+
+#OUTPUT OF THE TASK PERFORMED:
+
+[digital filter design output .pdf](https://github.com/user-attachments/files/18724534/digital.filter.design.output.pdf)
