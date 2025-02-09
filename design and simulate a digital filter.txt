@@ -1,0 +1,82 @@
+a digital filter design:
+
+Design File (fir_filter.sv)
+
+systemverilog
+module fir_filter(
+    input  clk,
+    input  rst,
+    input  [7:0] x,
+    output [15:0] y
+);
+
+// Filter coefficients
+parameter [15:0] h0 = 16'd10;
+parameter [15:0] h1 = 16'd20;
+parameter [15:0] h2 = 16'd30;
+
+// Delay registers
+reg [7:0] x_delay0;
+reg [7:0] x_delay1;
+
+// Filter output register
+reg [15:0] y_reg;
+
+always @(posedge clk) begin
+    if (rst) begin
+        x_delay0 <= 0;
+        x_delay1 <= 0;
+        y_reg <= 0;
+    end else begin
+        x_delay0 <= x;
+        x_delay1 <= x_delay0;
+        y_reg <= (x * h0) + (x_delay0 * h1) + (x_delay1 * h2);
+    end
+end
+
+assign y = y_reg;
+
+endmodule
+
+
+Testbench File (fir_filter_tb.sv)
+
+systemverilog
+module fir_filter_tb;
+
+reg clk;
+reg rst;
+reg [7:0] x;
+wire [15:0] y;
+
+fir_filter dut(
+    .clk(clk),
+    .rst(rst),
+    .x(x),
+    .y(y)
+);
+
+initial begin
+    clk = 0;
+    rst = 1;
+    x = 0;
+end
+
+always #10 clk = ~clk;
+
+initial begin
+    #20 rst = 0;
+    #10 x = 8'd10;
+    #10 x = 8'd20;
+    #10 x = 8'd30;
+    #100 $finish;
+end
+
+initial begin
+    $dumpfile("fir_filter.vcd");
+    $dumpvars(0, fir_filter_tb);
+end
+
+endmodule
+
+
